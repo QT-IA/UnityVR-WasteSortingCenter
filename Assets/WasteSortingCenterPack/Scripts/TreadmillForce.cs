@@ -1,19 +1,18 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class TreadmillForce : MonoBehaviour
 {
-    public float currentSpeed { get; private set; }
+    [SerializeField] private float currentSpeed = 5f;
 
-    private void OnTriggerStay(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
-        Rigidbody body = other.attachedRigidbody;
-        if (body != null)
+        Rigidbody body = collision.rigidbody;
+        if (body != null && !body.isKinematic)
         {
-            Vector3 velocity = body.linearVelocity;
-            velocity = transform.InverseTransformVector(velocity);
-            velocity.z = currentSpeed;
-            velocity = transform.TransformVector(velocity);
-            body.linearVelocity = velocity;
+            Vector3 forceDirection = transform.right;
+            Vector3 force = forceDirection * currentSpeed * body.mass;
+            body.AddForce(force, ForceMode.Force);
         }
     }
 
