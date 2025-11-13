@@ -29,9 +29,27 @@ public class Spawner : MonoBehaviour
     [Tooltip("Points où les objets peuvent apparaître. Si vide, utilise la position du GameObject contenant ce script.")]
     public Transform[] spawnPoints;
     [Tooltip("Intervalle entre chaque spawn en secondes")]
-    public float spawnInterval = 2f;
+    public float spawnInterval = 1f;
     [Tooltip("Activer/désactiver le spawn automatique en boucle")]
     public bool loop = true;
+
+    [Header("Physics / projection")]
+    [Tooltip("Force appliquée le long de l'axe local Right (X) du point de spawn lors de l'instanciation. 0 = pas de force.")]
+    public float spawnForce = 1f;
+    [Tooltip("Mode d'application de la force (Impulse, Force, VelocityChange, Acceleration)")]
+    public ForceMode spawnForceMode = ForceMode.Impulse;
+    [Tooltip("Si vrai, ajoute automatiquement un Rigidbody si le prefab instancié n'en a pas.")]
+    public bool addRigidbodyIfMissing = false;
+
+    [Header("Random rotation")]
+    [Tooltip("Activer la rotation aléatoire appliquée au prefab instancié.")]
+    public bool randomizeRotation = true;
+    [Tooltip("Si vrai, la rotation aléatoire affectera aussi l'axe Y. Sinon Y restera celui du spawnPoint.")]
+    public bool randomizeY = false;
+    [Tooltip("Angles minimaux (Euler) pour la rotation aléatoire")] 
+    public Vector3 randomRotationMin = new Vector3(0f, 0f, 0f);
+    [Tooltip("Angles maximaux (Euler) pour la rotation aléatoire")] 
+    public Vector3 randomRotationMax = new Vector3(0f, 360f, 0f);
 
     // Coroutine instance
     private Coroutine spawnRoutine;
@@ -84,10 +102,43 @@ public class Spawner : MonoBehaviour
         }
 
         Transform spawnTransform = ChooseSpawnTransform();
-        Vector3 pos = spawnTransform != null ? spawnTransform.position : transform.position;
-        Quaternion rot = spawnTransform != null ? spawnTransform.rotation : Quaternion.identity;
+        Vector3 pos = spawnTransform != null ? spawnTransform.position + Vector3.up * 2f + Vector3.right * 0.3f : transform.position + Vector3.up * 2f + Vector3.right * 0.3f;
 
-        Instantiate(prefab, pos, rot);
+        // Base rotation (from spawn point)
+        Quaternion baseRot = spawnTransform != null ? spawnTransform.rotation : Quaternion.identity;
+        Quaternion rot = baseRot;
+
+        // Appliquer une rotation aléatoire si activée (les angles sont en Euler)
+        if (randomizeRotation)
+        {
+            float rx = Random.Range(randomRotationMin.x, randomRotationMax.x);
+            float ry = randomizeY ? Random.Range(randomRotationMin.y, randomRotationMax.y) : 0f;
+            float rz = Random.Range(randomRotationMin.z, randomRotationMax.z);
+            Quaternion randomQ = Quaternion.Euler(rx, ry, rz);
+            rot = baseRot * randomQ;
+        }
+
+        GameObject go = Instantiate(prefab, pos, rot);
+
+        // Appliquer une force le long de l'axe local Right (X) du point de spawn ou du spawner
+        if (spawnForce != 0f)
+        {
+            Rigidbody rb = go.GetComponent<Rigidbody>();
+            if (rb == null && addRigidbodyIfMissing)
+            {
+                rb = go.AddComponent<Rigidbody>();
+            }
+
+            if (rb != null)
+            {
+                Vector3 direction = (spawnTransform != null) ? -spawnTransform.right : transform.right;
+                rb.AddForce(direction.normalized * spawnForce * 1.5f, spawnForceMode);
+            }
+            else
+            {
+                Debug.LogWarning($"Spawner: spawnForce != 0 mais l'objet '{go.name}' n'a pas de Rigidbody. Activer addRigidbodyIfMissing pour l'ajouter automatiquement.");
+            }
+        }
     }
 
     private Transform ChooseSpawnTransform()
