@@ -17,10 +17,6 @@ public class WasteDestroyer : MonoBehaviour
     [Tooltip("Délai avant destruction (en secondes). 0 = immédiat.")]
     public float destroyDelay = 0f;
 
-    [Header("Options avancées")]
-    [Tooltip("Si vrai, le script ne détruira l'objet entrant que si son Collider a isTrigger = true.")]
-    public bool requireOtherIsTrigger = true;
-
     void Start()
     {
         // Vérifier que le collider est bien en mode Trigger
@@ -34,13 +30,6 @@ public class WasteDestroyer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Si on exige que l'objet entrant soit un trigger, vérifier sa propriété
-        if (requireOtherIsTrigger && !other.isTrigger)
-        {
-            if (debugLog) Debug.Log($"WasteDestroyer: Ignored {other.gameObject.name} because other.isTrigger == false");
-            return;
-        }
-
         // Vérifier le tag si spécifié
         if (!string.IsNullOrEmpty(targetTag) && !other.CompareTag(targetTag))
         {
