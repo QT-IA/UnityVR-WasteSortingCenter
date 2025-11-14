@@ -268,7 +268,6 @@ MonoBehaviour:
   targetTag: 
   debugLog: 0
   destroyDelay: 0
-  requireOtherIsTrigger: 1
 --- !u!65 &334024373
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3036,12 +3035,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a14e5b10f6bb845439dd463bff5b5181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Apple: {fileID: 6189748038453719568, guid: a62a17e34f67bb9479dccbf29c646325, type: 3}
+  Bottle: {fileID: 5448916726818588564, guid: feb26b466c1d5f64b835af0c25255723, type: 3}
+  Carrot: {fileID: 1902490449437651470, guid: 94f57207e35281d40963f2c55ca737e8, type: 3}
   Carton0: {fileID: 630664110863601282, guid: 73aafd8bd6ccf5740a7cd1d3af76c3b8, type: 3}
   Carton1: {fileID: 4388499634248721070, guid: 9b01137c6246db248998c1fe2e1d7c97, type: 3}
-  Bottle: {fileID: 5448916726818588564, guid: feb26b466c1d5f64b835af0c25255723, type: 3}
+  Pizza: {fileID: 854149959729978729, guid: b60416c12671fcb49b9ea6c997bb9cf4, type: 3}
+  PizzaBox: {fileID: 7031761273498676025, guid: 9aa583022db81454c96bfd364c624c49, type: 3}
+  SodaCan: {fileID: 4664220390938385330, guid: 82b62cf99d216d84684773b26d2f43fc, type: 3}
+  SodaCup: {fileID: 7277457148996431076, guid: faff72ab1fe27e549b93761c625671b9, type: 3}
+  Water0: {fileID: 1457873852128905735, guid: 8b63640e1bd4b024d9ab308ced4c06ba, type: 3}
+  Water1: {fileID: 8266449148845273744, guid: 028fa5943af1cd34d9af4d2a8440e6ec, type: 3}
+  weightApple: 0.09
+  weightBottle: 0.34
+  weightCarrot: 0.09
   weightCarton0: 0.33
   weightCarton1: 0.33
-  weightBottle: 0.34
+  weightPizza: 0.09
+  weightPizzaBox: 0.09
+  weightSodaCan: 0.09
+  weightSodaCup: 0.09
+  weightWater0: 0.09
+  weightWater1: 0.1
   spawnPoints: []
   spawnInterval: 1
   loop: 1
