@@ -1,11 +1,6 @@
 using UnityEngine;
 using TMPro; // Assurez-vous d'avoir TextMeshPro installé
 
-/// <summary>
-/// Version étendue du WasteDestroyer qui affiche un message UI lorsqu'un objet est détruit.
-/// Usage : Attachez ce script à un GameObject avec un Collider (cochez "Is Trigger").
-/// Configurez le TextMeshPro UI dans l'Inspector.
-/// </summary>
 [RequireComponent(typeof(Collider))]
 public class WasteDestroyerUI : MonoBehaviour
 {

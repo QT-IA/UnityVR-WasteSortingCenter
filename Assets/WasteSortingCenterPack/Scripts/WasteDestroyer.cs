@@ -1,10 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Détruit automatiquement les déchets qui entrent dans ce collider Trigger.
-/// Usage : Attachez ce script à un GameObject avec un Collider (cochez "Is Trigger").
-/// Placez ce GameObject à l'extrémité du tapis roulant où les déchets doivent disparaître.
-/// </summary>
 [RequireComponent(typeof(Collider))]
 public class WasteDestroyer : MonoBehaviour
 {

@@ -1,12 +1,5 @@
 using System.Collections;
 using UnityEngine;
-
-/// <summary>
-/// Script pour spawn des déchets Carton0, Carton1 et Bottle selon des probabilités configurables.
-/// Usage : attacher ce script à un GameObject vide dans la scène, assigner les prefabs dans
-/// l'inspector et régler les probabilités (elles seront normalisées automatiquement).
-/// </summary>
-/// 
 public class Spawner : MonoBehaviour
 {
     [Header("Prefabs")]
