@@ -405,6 +405,9 @@ MonoBehaviour:
   targetTag: 
   debugLog: 0
   destroyDelay: 0
+  onWasteDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &334024373
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -438,8 +441,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c36f77d2eacc817498e8acaea2b6a5b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTag: 
-  destroyDelay: 1
+  wasteDestroyer: {fileID: 0}
+  trashbinTransform: {fileID: 0}
+  verticalOffset: 1.5
   destructionText: {fileID: 89841591}
   showPlusOne: 1
   destructionMessage: "Objet d\xE9truit : {0}"
@@ -2636,6 +2640,9 @@ MonoBehaviour:
   targetTag: 
   debugLog: 0
   destroyDelay: 0
+  onWasteDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &6050890301830362898
 BoxCollider:
   m_ObjectHideFlags: 0

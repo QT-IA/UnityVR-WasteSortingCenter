@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -707460313613945098}
   m_Layer: 0
   m_Name: PizzaBox
-  m_TagString: Untagged
+  m_TagString: dechet_pas_recyclable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

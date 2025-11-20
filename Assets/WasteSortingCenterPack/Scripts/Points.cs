@@ -68,7 +68,7 @@ public class WasteDestroyerUI : MonoBehaviour
         }
 
         // Afficher le message UI
-        ShowDestructionMessage(objectName);
+        ShowDestructionMessage(objectName, other.tag);
 
         // Détruire l'objet
         if (destroyDelay > 0f)
@@ -81,9 +81,12 @@ public class WasteDestroyerUI : MonoBehaviour
         }
     }
 
-    private void ShowDestructionMessage(string objectName)
+    private void ShowDestructionMessage(string objectName, string tag)
     {
         if (destructionText == null) return;
+
+        // N'afficher le message que pour les déchets non recyclables
+        if (tag != "dechet_pas_recyclable") return;
 
         // Choisir le message à afficher
         string message;
