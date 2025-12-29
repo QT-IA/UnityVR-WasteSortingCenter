@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5be2e02600bf76e4dba04161f25d972a
+timeCreated: 1447827230
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 62597
+  packageName: Abandoned Factory (Lite)
+  packageVersion: 1.6
+  assetPath: Assets/TirgamesAssets/Factory/Environment/SkyBoxes/Materials/SkyBoxIndustrial01.mat
+  uploadId: 746142
