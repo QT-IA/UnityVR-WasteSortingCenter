@@ -8,6 +8,9 @@
         },
         {
             "m_Id": "e9fe49897cd7494bbb10acdeed46f0c1"
+        },
+        {
+            "m_Id": "22573374824845cc97cc93ad3c23cc66"
         }
     ],
     "m_Keywords": [],
@@ -65,6 +68,9 @@
         },
         {
             "m_Id": "0f1adf6207d24a99b9619bc80adb658f"
+        },
+        {
+            "m_Id": "a6f50d4c7c6e467bba4c22592b174815"
         }
     ],
     "m_GroupDatas": [],
@@ -101,20 +107,6 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
-                    "m_Id": "559dd2b3c5b44f7f8efb952ba4d86c7b"
-                },
-                "m_SlotId": 2
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "75f9fdc02f1c4a95ab73e0bef7fad9db"
-                },
-                "m_SlotId": 2
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
                     "m_Id": "75f9fdc02f1c4a95ab73e0bef7fad9db"
                 },
                 "m_SlotId": 0
@@ -122,6 +114,20 @@
             "m_InputSlot": {
                 "m_Node": {
                     "m_Id": "ff8824eb52864e4fa302b9b73ead4054"
+                },
+                "m_SlotId": 2
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "a6f50d4c7c6e467bba4c22592b174815"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "75f9fdc02f1c4a95ab73e0bef7fad9db"
                 },
                 "m_SlotId": 2
             }
@@ -446,6 +452,34 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "22573374824845cc97cc93ad3c23cc66",
+    "m_Guid": {
+        "m_GuidSerialized": "f985d4f4-bc6f-4969-bde4-aa98a9317126"
+    },
+    "m_Name": "ElapsedTime",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "ElapsedTime",
+    "m_DefaultReferenceName": "_ElapsedTime",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 0,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
     "m_ObjectId": "2633ae70be224923aba54ee90cab2422",
@@ -498,6 +532,9 @@
         },
         {
             "m_Id": "e9fe49897cd7494bbb10acdeed46f0c1"
+        },
+        {
+            "m_Id": "22573374824845cc97cc93ad3c23cc66"
         }
     ]
 }
@@ -741,6 +778,21 @@
     },
     "m_Labels": [],
     "m_Channel": 0
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "61da51dca7e24387a3c8bfde81ffcfad",
+    "m_Id": 0,
+    "m_DisplayName": "ElapsedTime",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
 }
 
 {
@@ -1025,6 +1077,42 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "a6f50d4c7c6e467bba4c22592b174815",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -1443.4912109375,
+            "y": 338.1070556640625,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "61da51dca7e24387a3c8bfde81ffcfad"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "22573374824845cc97cc93ad3c23cc66"
+    }
 }
 
 {

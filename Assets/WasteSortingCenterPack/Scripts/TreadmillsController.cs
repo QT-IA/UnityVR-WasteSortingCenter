@@ -7,6 +7,7 @@ public class TreadmillsController : MonoBehaviour
     [SerializeField] Material treadmillMat;
     TreadmillForce[] treadmills;
     const float MATERIAL_SPEED_MULTIPLIER = 1f;
+    float elapsedTime;
 
     [Header("Pause")]
     public bool isPaused { get; private set; }
@@ -26,6 +27,9 @@ public class TreadmillsController : MonoBehaviour
 
         currentSpeed = Mathf.SmoothDamp(currentSpeed, effectiveTargetSpeed, ref refSpeed, SPEED_SMOOTH);
         SetSpeed(currentSpeed);
+
+        elapsedTime += Time.deltaTime * -currentSpeed;
+        treadmillMat.SetFloat("_ElapsedTime", elapsedTime);
     }
 
     public void SetSpeed(float speed01)

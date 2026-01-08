@@ -4,31 +4,33 @@ using TMPro; // Assurez-vous d'avoir TextMeshPro installé
 [RequireComponent(typeof(Collider))]
 public class WasteDestroyerUI : MonoBehaviour
 {
-    [Header("Destruction settings")]
-    [Tooltip("Tag des objets à détruire (laissez vide pour détruire tout ce qui entre)")]
-    public string targetTag = "";
+    [Header("Game Rules")]
+    [Tooltip("Est-ce la poubelle de recyclage (Verte) ?\nTRUE = Attend objets sans tag ('Untagged')\nFALSE = Attend objets taggés 'dechet_pas_recyclable'")]
+    public bool isRecyclingBin = true;
 
     [Tooltip("Délai avant destruction (en secondes). 0 = immédiat.")]
     public float destroyDelay = 0f;
 
     [Header("UI Feedback")]
-    [Tooltip("Le TextMeshPro UI qui affichera le message de destruction")]
-    public TextMeshProUGUI destructionText;
+    [Tooltip("ASSIGNER ICI LE TEXTE 'SCORE +1' (celui au dessus de la poubelle verte)")]
+    public TMP_Text successTextUI;
 
-    [Tooltip("Afficher '+1' au lieu d'un message personnalisé")]
-    public bool showPlusOne = true;
-
-    [Tooltip("Message affiché si showPlusOne est false (utilisez {0} pour le nom de l'objet)")]
-    public string destructionMessage = "Objet détruit : {0}";
+    [Tooltip("ASSIGNER ICI LE TEXTE 'SCORE -1' (celui au dessus de la poubelle rouge)")]
+    public TMP_Text errorTextUI;
 
     [Tooltip("Durée d'affichage du message en secondes")]
-    public float messageDuration = 0.5f;
-
-    [Tooltip("Couleur du texte pendant l'affichage")]
-    public Color messageColor = Color.green;
+    public float messageDuration = 1.0f;
 
     [Tooltip("Couleur par défaut du texte (quand rien n'est affiché)")]
     public Color defaultColor = Color.white;
+
+    [Header("Feedback Succès (Bon Tag)")]
+    public string successMessage = "+1";
+    public Color successColor = Color.green;
+
+    [Header("Feedback Erreur (Mauvais Tag)")]
+    public string errorMessage = "-1";
+    public Color errorColor = Color.red;
 
     [Header("Debug")]
     [Tooltip("Activer les logs pour le debug")]
@@ -44,31 +46,21 @@ public class WasteDestroyerUI : MonoBehaviour
             col.isTrigger = true;
         }
 
-        // Initialiser le texte si assigné
-        if (destructionText != null)
-        {
-            destructionText.text = "";
-            destructionText.color = defaultColor;
-        }
+        HideMessage();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Vérifier le tag si spécifié
-        if (!string.IsNullOrEmpty(targetTag) && !other.CompareTag(targetTag))
-        {
-            return;
-        }
-
         string objectName = other.gameObject.name;
+        string tag = other.tag;
 
         if (debugLog)
         {
-            Debug.Log($"WasteDestroyerUI: Destruction de {objectName}");
+            Debug.Log($"WasteDestroyerUI: Objet entré: {objectName} | Tag: {tag} | Mode Recyclage: {isRecyclingBin}");
         }
 
-        // Afficher le message UI
-        ShowDestructionMessage(objectName, other.tag);
+        // Afficher le message UI (Succès ou Erreur selon la logique)
+        ShowDestructionMessage(tag);
 
         // Détruire l'objet
         if (destroyDelay > 0f)
@@ -81,38 +73,71 @@ public class WasteDestroyerUI : MonoBehaviour
         }
     }
 
-    private void ShowDestructionMessage(string objectName, string tag)
+    private void ShowDestructionMessage(string objectTag)
     {
-        if (destructionText == null) return;
+        bool isSuccess = false;
 
-        // N'afficher le message que pour les déchets non recyclables
-        if (tag != "dechet_pas_recyclable") return;
-
-        // Choisir le message à afficher
-        string message;
-        if (showPlusOne)
+        if (isRecyclingBin)
         {
-            message = "+1";
+            // Poubelle Verte : Succès si l'objet n'a PAS de tag (ou "Untagged")
+            isSuccess = (objectTag == "Untagged");
         }
         else
         {
-            message = string.Format(destructionMessage, objectName);
+            // Poubelle Rouge : Succès si l'objet est "dechet_pas_recyclable"
+            isSuccess = (objectTag == "dechet_pas_recyclable");
         }
 
-        // Afficher le message
-        destructionText.text = message;
-        destructionText.color = messageColor;
+        if (isSuccess)
+        {
+            if (successTextUI != null)
+            {
+                SpawnFloatingText(successTextUI, successMessage, successColor);
+            }
 
-        // Cacher le message après la durée
-        Invoke(nameof(HideMessage), messageDuration);
+            // AJOUT DE POINTS
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.AddPoints(1);
+            }
+        }
+        else
+        {
+            if (errorTextUI != null)
+            {
+                SpawnFloatingText(errorTextUI, errorMessage, errorColor);
+            }
+
+            // RETRAIT DE POINTS
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.AddPoints(-1);
+            }
+        }
+        // Plus besoin de HideMessage car les textes volants se détruisent tout seuls
+    }
+
+    private void SpawnFloatingText(TMP_Text template, string text, Color color)
+    {
+        // On crée une copie du texte en gardant le MÊME PARENT pour conserver la taille/échelle locale correcte
+        GameObject clone = Instantiate(template.gameObject, template.transform.position, template.transform.rotation, template.transform.parent);
+        
+        // On s'assure qu'il est bien visible et configuré
+        clone.SetActive(true);
+        
+        // On lui met le bon texte et la bonne couleur
+        TMP_Text cloneText = clone.GetComponent<TMP_Text>();
+        cloneText.text = text;
+        cloneText.color = color;
+
+        // On ajoute le script d'animation
+        clone.AddComponent<FloatingScore>();
     }
 
     private void HideMessage()
     {
-        if (destructionText != null)
-        {
-            destructionText.text = "";
-            destructionText.color = defaultColor;
-        }
+        // On vide juste les textes templates pour qu'ils restent invisibles
+        if (successTextUI != null) successTextUI.text = "";
+        if (errorTextUI != null) errorTextUI.text = "";
     }
 }

@@ -4,71 +4,127 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class EmergencyBrakeHandle : MonoBehaviour
 {
-    [SerializeField] Transform handleTransform;
-    [SerializeField] float pullThreshold = 0.1f; // Distance de traction nécessaire pour activer le frein
-    [SerializeField] float maxPullDistance = 0.1f; // Distance maximale de traction autorisée
-    [SerializeField] Vector3 pullDirection = Vector3.down; // Direction dans laquelle le handle peut être tiré
+    [SerializeField] TreadmillsController treadmillsController;
+    [SerializeField] float pullThreshold = 0.1f; // Distance de traction nÃ©cessaire pour activer le frein
+    [SerializeField] float maxPullDistance = 0.1f; // Distance maximale de traction autorisÃ©e
+    [SerializeField] Vector3 pullDirection = Vector3.down; // Direction dans laquelle le handle peut Ãªtre tirÃ©
 
     private Vector3 initialPosition;
+    private Quaternion initialRotation;
     private XRGrabInteractable grabInteractable;
     private bool isBrakeActivated = false;
-    private TreadmillForce[] treadmills;
+    private Rigidbody rb;
 
     void Start()
     {
-        // Récupère le composant XRGrabInteractable sur le handle
+        // RÃ©cupÃ¨re le composant XRGrabInteractable sur le handle
         grabInteractable = GetComponent<XRGrabInteractable>();
+        rb = GetComponent<Rigidbody>();
 
         if (grabInteractable == null)
         {
-            Debug.LogError("EmergencyBrakeHandle nécessite un composant XRGrabInteractable sur le GameObject !");
+            Debug.LogError("EmergencyBrakeHandle nÃ©cessite un composant XRGrabInteractable sur le GameObject !");
             return;
         }
 
-        if (handleTransform == null)
+        // Configure le Rigidbody pour Ãªtre kinematic
+        if (rb != null)
         {
-            handleTransform = transform;
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+        else
+        {
+            // CrÃ©e un Rigidbody si inexistant
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true;
+            rb.useGravity = false;
         }
 
-        initialPosition = handleTransform.localPosition;
+        // Configure le XRGrabInteractable pour permettre l'interaction
+        grabInteractable.movementType = XRBaseInteractable.MovementType.Instantaneous;
+        grabInteractable.trackPosition = false; // DÃ©sactive le tracking automatique
+        grabInteractable.trackRotation = false;
+        grabInteractable.throwOnDetach = false;
+        grabInteractable.retainTransformParent = true;
+        grabInteractable.useDynamicAttach = true; // Permet de saisir sans dÃ©calage
 
-        // Trouve tous les tapis roulants dans la scène
-        treadmills = FindObjectsByType<TreadmillForce>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        // Sauvegarde la position et rotation initiales
+        initialPosition = transform.localPosition;
+        initialRotation = transform.localRotation;
 
-        // S'abonne aux événements de grab avec la nouvelle API
+        // Trouve le TreadmillsController dans la scÃ¨ne si non assignÃ©
+        if (treadmillsController == null)
+        {
+            treadmillsController = FindFirstObjectByType<TreadmillsController>();
+        }
+
+        // S'abonne aux Ã©vÃ©nements de grab avec la nouvelle API
         grabInteractable.selectEntered.AddListener(OnGrabbed);
         grabInteractable.selectExited.AddListener(OnReleased);
     }
 
-    void Update()
+    void LateUpdate()
     {
+        // Force toujours la rotation Ã  rester constante
+        transform.localRotation = initialRotation;
+
         if (grabInteractable != null && grabInteractable.isSelected)
         {
-            ConstrainHandlePosition();
-            CheckPullDistance();
+            // DÃ©place manuellement le handle vers l'interactor de maniÃ¨re contrainte
+            MoveHandleToInteractor();
+        }
+        else
+        {
+            // Retourne progressivement Ã  la position initiale quand relÃ¢chÃ©
+            transform.localPosition = Vector3.Lerp(transform.localPosition, initialPosition, Time.deltaTime * 5f);
         }
     }
 
-    void ConstrainHandlePosition()
+    void MoveHandleToInteractor()
     {
-        // Calcule le vecteur de déplacement depuis la position initiale
-        Vector3 offset = handleTransform.localPosition - initialPosition;
+        if (grabInteractable.interactorsSelecting.Count == 0) return;
 
-        // Projette le déplacement sur la direction autorisée
+        var interactor = grabInteractable.interactorsSelecting[0];
+
+        // Position de la main en world space
+        Vector3 handWorldPos = interactor.GetAttachTransform(grabInteractable).position;
+
+        // Convertit en local space par rapport au parent (ou world si pas de parent)
+        Transform parentTransform = transform.parent;
+        Vector3 handLocalPos;
+
+        if (parentTransform != null)
+        {
+            handLocalPos = parentTransform.InverseTransformPoint(handWorldPos);
+        }
+        else
+        {
+            handLocalPos = handWorldPos;
+        }
+
+        // Calcule l'offset depuis la position initiale
+        Vector3 offset = handLocalPos - initialPosition;
+
+        // Projette sur l'axe autorisÃ©
         float distanceAlongAxis = Vector3.Dot(offset, pullDirection.normalized);
 
-        // Limite la distance entre 0 (position initiale) et maxPullDistance
+        // Limite la distance
         distanceAlongAxis = Mathf.Clamp(distanceAlongAxis, 0f, maxPullDistance);
 
         // Applique la position contrainte
-        handleTransform.localPosition = initialPosition + pullDirection.normalized * distanceAlongAxis;
+        Vector3 targetLocalPos = initialPosition + pullDirection.normalized * distanceAlongAxis;
+        transform.localPosition = targetLocalPos;
+
+        // Debug pour voir la distance
+        Debug.Log($"Hand: {handLocalPos}, Initial: {initialPosition}, Distance: {distanceAlongAxis:F3}m / Threshold: {pullThreshold}m");
+
+        // VÃ©rifie et active le frein
+        CheckPullDistance(distanceAlongAxis);
     }
 
-    void CheckPullDistance()
+    void CheckPullDistance(float pullDistance)
     {
-        // Calcule la distance entre la position actuelle et la position initiale
-        float pullDistance = Vector3.Distance(handleTransform.localPosition, initialPosition);
-
         if (pullDistance >= pullThreshold && !isBrakeActivated)
         {
             ActivateBrake();
@@ -83,22 +139,24 @@ public class EmergencyBrakeHandle : MonoBehaviour
     {
         isBrakeActivated = true;
 
-        // Arrête tous les tapis roulants
-        foreach (TreadmillForce treadmill in treadmills)
+        if (treadmillsController != null)
         {
-            treadmill.SetSpeed(0f);
+            treadmillsController.SetPaused(true);
+            Debug.Log("Frein d'urgence activÃ© - Tapis roulants arrÃªtÃ©s");
         }
-
-        Debug.Log("Frein d'urgence activé - Tapis roulants arrêtés");
     }
 
     void DeactivateBrake()
     {
         isBrakeActivated = false;
 
-        // Note : Les tapis roulants resteront à 0 jusqu'à ce que le contrôleur de vitesse les remette en marche
-        Debug.Log("Frein d'urgence désactivé - Le contrôleur de vitesse peut redémarrer les tapis");
+        if (treadmillsController != null)
+        {
+            treadmillsController.SetPaused(false);
+            Debug.Log("Frein d'urgence dÃ©sactivÃ© - Tapis roulants redÃ©marrÃ©s");
+        }
     }
+
     void OnGrabbed(SelectEnterEventArgs args)
     {
         Debug.Log("Handle saisi");
@@ -106,10 +164,11 @@ public class EmergencyBrakeHandle : MonoBehaviour
 
     void OnReleased(SelectExitEventArgs args)
     {
-        Debug.Log("Handle relâché");
+        Debug.Log("Handle relÃ¢chÃ©");
 
-        // Optionnel : Réinitialise la position du handle
-        // handleTransform.localPosition = initialPosition;
+        // RÃ©initialise la position du handle Ã  sa position initiale
+        transform.localPosition = initialPosition;
+        transform.localRotation = initialRotation;
     }
 
     void OnDisable()
@@ -121,3 +180,4 @@ public class EmergencyBrakeHandle : MonoBehaviour
         }
     }
 }
+ 
