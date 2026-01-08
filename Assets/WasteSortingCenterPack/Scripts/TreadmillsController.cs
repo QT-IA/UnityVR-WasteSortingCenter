@@ -47,4 +47,9 @@ public class TreadmillsController : MonoBehaviour
     {
         isPaused = value;
     }
+
+    public void SetTargetSpeed(float speed01)
+    {
+        targetSpeed = Mathf.Clamp01(speed01);
+    }
 }

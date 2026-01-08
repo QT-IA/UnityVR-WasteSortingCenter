@@ -96,7 +96,7 @@ public class Spawner : MonoBehaviour
         if (spawnInterval < 0.01f) spawnInterval = 0.01f;
     }
 
-    void Start()
+    void OnEnable()
     {
         if (loop)
         {
@@ -107,7 +107,10 @@ public class Spawner : MonoBehaviour
     void OnDisable()
     {
         if (spawnRoutine != null)
+        {
             StopCoroutine(spawnRoutine);
+            spawnRoutine = null;
+        }
     }
 
     /// <summary>

@@ -2019,6 +2019,8 @@ GameObject:
   - component: {fileID: 949526983}
   - component: {fileID: 949526982}
   - component: {fileID: 949526984}
+  - component: {fileID: 949526985}
+  - component: {fileID: 949526986}
   m_Layer: 0
   m_Name: Handle (1)
   m_TagString: Untagged
@@ -2116,6 +2118,97 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -6659003102834268097, guid: 87033b02177178e4faa90dd90b2313e8, type: 3}
+--- !u!114 &949526985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949526980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a35f6cfbfba9b548aaa00d52cfe8a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InteractionManager: {fileID: 0}
+  m_Colliders: []
+  m_InteractionLayers:
+    m_Bits: 1
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 0
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+--- !u!114 &949526986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949526980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aec69e00edd166d4c9e86697ea654779, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  treadmillsController: {fileID: 4423224763619647825}
+  rotationAxis: {x: 1, y: 0, z: 0}
+  leverUpAxis: {x: 0, y: 1, z: 0}
+  minAngle: -45
+  maxAngle: 45
+  initialSpeedRatio: 0.5
+  minOutputSpeed: 0.2
 --- !u!1001 &983285370
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2308,6 +2401,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4963279, y: 0.2689927, z: 1.1703517}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1076171343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076171335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e7733abec58bb40b62a531b498efc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTreadmillSpeed: 0.5
+  targetSpeed: 0.5
+  treadmillMat: {fileID: 2100000, guid: 2c985441cc4a9df48b6d5e0aa564e8d5, type: 2}
 --- !u!1 &1116898501
 GameObject:
   m_ObjectHideFlags: 0
@@ -8313,7 +8421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8901,8 +9009,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   treadmillsController: {fileID: 4423224763619647825}
-  pullThreshold: 0.1
-  maxPullDistance: 0.1
+  spawner: {fileID: 0}
+  pullThreshold: 0.15
+  maxPullDistance: 0.15
   pullDirection: {x: 0, y: -1, z: 0}
 --- !u!54 &1994749449
 Rigidbody:
@@ -9814,6 +9923,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Treadmill (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3199040329402921453, guid: fa57fa47bc93a9b479273b65eb877c61, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.058
+      objectReference: {fileID: 0}
+    - target: {fileID: 3199040329402921453, guid: fa57fa47bc93a9b479273b65eb877c61, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5570073691206228216, guid: fa57fa47bc93a9b479273b65eb877c61, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
@@ -9884,6 +10001,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2158228815334599014, guid: fa57fa47bc93a9b479273b65eb877c61, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1076171339}
+    - targetCorrespondingSourceObject: {fileID: 2158228815334599014, guid: fa57fa47bc93a9b479273b65eb877c61, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1076171343}
     - targetCorrespondingSourceObject: {fileID: 2832176106946924196, guid: fa57fa47bc93a9b479273b65eb877c61, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1994749449}
@@ -10108,7 +10228,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000003774895, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: 1.7, y: 0, z: 1.456}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.1, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5202860830739798743}
@@ -11515,7 +11635,7 @@ Transform:
   m_GameObject: {fileID: 8000162253433125559}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.36144, z: 0}
+  m_LocalPosition: {x: 0, y: 1.85, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11777,9 +11897,9 @@ MonoBehaviour:
   weightWater0: 0.09
   weightWater1: 0.1
   spawnPoints: []
-  spawnInterval: 1
+  spawnInterval: 2
   loop: 1
-  spawnForce: 1
+  spawnForce: 0.8
   spawnForceMode: 1
   addRigidbodyIfMissing: 0
   randomizeRotation: 1

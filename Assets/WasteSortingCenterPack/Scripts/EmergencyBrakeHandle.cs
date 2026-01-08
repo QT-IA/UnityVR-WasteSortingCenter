@@ -5,25 +5,26 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class EmergencyBrakeHandle : MonoBehaviour
 {
     [SerializeField] TreadmillsController treadmillsController;
-    [SerializeField] float pullThreshold = 0.1f; // Distance de traction nécessaire pour activer le frein
+    [SerializeField] Spawner spawner;
+    [SerializeField] float pullThreshold = 0.08f; // Distance de traction nécessaire pour activer le frein
     [SerializeField] float maxPullDistance = 0.1f; // Distance maximale de traction autorisée
     [SerializeField] Vector3 pullDirection = Vector3.down; // Direction dans laquelle le handle peut être tiré
 
     private Vector3 initialPosition;
     private Quaternion initialRotation;
-    private XRGrabInteractable grabInteractable;
+    private XRBaseInteractable grabInteractable;
     private bool isBrakeActivated = false;
     private Rigidbody rb;
 
     void Start()
     {
-        // Récupère le composant XRGrabInteractable sur le handle
-        grabInteractable = GetComponent<XRGrabInteractable>();
+        // Récupère le composant XRBaseInteractable sur le handle
+        grabInteractable = GetComponent<XRBaseInteractable>();
         rb = GetComponent<Rigidbody>();
 
         if (grabInteractable == null)
         {
-            Debug.LogError("EmergencyBrakeHandle nécessite un composant XRGrabInteractable sur le GameObject !");
+            Debug.LogError("EmergencyBrakeHandle nécessite un composant XRBaseInteractable sur le GameObject !");
             return;
         }
 
@@ -40,15 +41,7 @@ public class EmergencyBrakeHandle : MonoBehaviour
             rb.isKinematic = true;
             rb.useGravity = false;
         }
-
-        // Configure le XRGrabInteractable pour permettre l'interaction
-        grabInteractable.movementType = XRBaseInteractable.MovementType.Instantaneous;
-        grabInteractable.trackPosition = false; // Désactive le tracking automatique
-        grabInteractable.trackRotation = false;
-        grabInteractable.throwOnDetach = false;
-        grabInteractable.retainTransformParent = true;
-        grabInteractable.useDynamicAttach = true; // Permet de saisir sans décalage
-
+        
         // Sauvegarde la position et rotation initiales
         initialPosition = transform.localPosition;
         initialRotation = transform.localRotation;
@@ -57,9 +50,18 @@ public class EmergencyBrakeHandle : MonoBehaviour
         if (treadmillsController == null)
         {
             treadmillsController = FindFirstObjectByType<TreadmillsController>();
+            if (treadmillsController == null)
+            {
+                Debug.LogError("EmergencyBrakeHandle: TreadmillsController introuvable ! Le frein ne pourra pas arrêter le tapis.");
+            }
         }
 
-        // S'abonne aux événements de grab avec la nouvelle API
+        if (spawner == null)
+        {
+            spawner = FindFirstObjectByType<Spawner>();
+        }
+
+        // S'abonne aux événements de select avec la nouvelle API
         grabInteractable.selectEntered.AddListener(OnGrabbed);
         grabInteractable.selectExited.AddListener(OnReleased);
     }
@@ -71,13 +73,8 @@ public class EmergencyBrakeHandle : MonoBehaviour
 
         if (grabInteractable != null && grabInteractable.isSelected)
         {
-            // Déplace manuellement le handle vers l'interactor de manière contrainte
+            // Déplace manuellement le handle vers l'interactor
             MoveHandleToInteractor();
-        }
-        else
-        {
-            // Retourne progressivement à la position initiale quand relâché
-            transform.localPosition = Vector3.Lerp(transform.localPosition, initialPosition, Time.deltaTime * 5f);
         }
     }
 
@@ -93,15 +90,8 @@ public class EmergencyBrakeHandle : MonoBehaviour
         // Convertit en local space par rapport au parent (ou world si pas de parent)
         Transform parentTransform = transform.parent;
         Vector3 handLocalPos;
-
-        if (parentTransform != null)
-        {
-            handLocalPos = parentTransform.InverseTransformPoint(handWorldPos);
-        }
-        else
-        {
-            handLocalPos = handWorldPos;
-        }
+        
+        handLocalPos = parentTransform.InverseTransformPoint(handWorldPos);
 
         // Calcule l'offset depuis la position initiale
         Vector3 offset = handLocalPos - initialPosition;
@@ -142,8 +132,14 @@ public class EmergencyBrakeHandle : MonoBehaviour
         if (treadmillsController != null)
         {
             treadmillsController.SetPaused(true);
-            Debug.Log("Frein d'urgence activé - Tapis roulants arrêtés");
         }
+
+        if (spawner != null)
+        {
+            spawner.enabled = false;
+        }
+        
+        Debug.Log("Frein d'urgence activé - Tapis et Spawner arrêtés");
     }
 
     void DeactivateBrake()
@@ -153,8 +149,14 @@ public class EmergencyBrakeHandle : MonoBehaviour
         if (treadmillsController != null)
         {
             treadmillsController.SetPaused(false);
-            Debug.Log("Frein d'urgence désactivé - Tapis roulants redémarrés");
         }
+
+        if (spawner != null)
+        {
+            spawner.enabled = true;
+        }
+
+        Debug.Log("Frein d'urgence désactivé - Tapis et Spawner redémarrés");
     }
 
     void OnGrabbed(SelectEnterEventArgs args)
@@ -165,10 +167,7 @@ public class EmergencyBrakeHandle : MonoBehaviour
     void OnReleased(SelectExitEventArgs args)
     {
         Debug.Log("Handle relâché");
-
-        // Réinitialise la position du handle à sa position initiale
-        transform.localPosition = initialPosition;
-        transform.localRotation = initialRotation;
+        // Le handle reste à sa dernière position
     }
 
     void OnDisable()
