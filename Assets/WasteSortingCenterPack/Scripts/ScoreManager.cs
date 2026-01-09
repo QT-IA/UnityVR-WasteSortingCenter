@@ -44,8 +44,20 @@ public class ScoreManager : MonoBehaviour
         UpdateScoreDisplay();
     }
 
+    public void ResetScore()
+    {
+        currentScore = 0;
+        UpdateScoreDisplay();
+    }
+
     public int AddPoints(int amount)
     {
+        // En mode démo, on ne marque pas de points
+        if (GameManager.Instance != null && GameManager.Instance.isDemoMode)
+        {
+            return 0;
+        }
+
         int finalAmount = amount;
 
         // Applique le multiplicateur seulement sur les gains de points
