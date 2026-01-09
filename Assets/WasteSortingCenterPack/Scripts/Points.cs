@@ -11,6 +11,20 @@ public class WasteDestroyerUI : MonoBehaviour
     [Tooltip("Délai avant destruction (en secondes). 0 = immédiat.")]
     public float destroyDelay = 0f;
 
+    [Header("Identité Visuelle (Anneau)")]
+    public float ringRadius = 0.5f;
+    public float ringWidth = 0.05f;
+    public float baseHeight = 0.0f; // Hauteur de base par rapport au pivot
+    public float verticalRange = 0.3f;
+    public float verticalSpeed = 2.0f;
+    public int segments = 50;
+    
+    public Color recyclingColor = Color.green;
+    public Color wasteColor = Color.red;
+
+    private LineRenderer lineRenderer;
+    private GameObject ringObject;
+
     [Header("UI Feedback")]
     [Tooltip("ASSIGNER ICI LE TEXTE 'SCORE +1' (celui au dessus de la poubelle verte)")]
     public TMP_Text successTextUI;
@@ -44,6 +58,8 @@ public class WasteDestroyerUI : MonoBehaviour
 
     private void Start()
     {
+        SetupRing();
+
         // Vérifier que le collider est bien en mode Trigger
         Collider col = GetComponent<Collider>();
         if (col != null && !col.isTrigger)
@@ -60,6 +76,83 @@ public class WasteDestroyerUI : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+    }
+
+    private void Update()
+    {
+        AnimateRing();
+    }
+
+    private void SetupRing()
+    {
+        // Création d'un objet enfant pour l'anneau si non existant
+        if (ringObject == null)
+        {
+            ringObject = new GameObject("VisualRing");
+            ringObject.transform.SetParent(transform, false);
+            ringObject.transform.localPosition = Vector3.zero;
+        }
+
+        lineRenderer = ringObject.GetComponent<LineRenderer>();
+        if (lineRenderer == null)
+        {
+            lineRenderer = ringObject.AddComponent<LineRenderer>();
+        }
+
+        // Configuration du LineRenderer
+        lineRenderer.useWorldSpace = false; // Important pour suivre le mouvement local
+        lineRenderer.loop = true;
+        lineRenderer.positionCount = segments;
+        lineRenderer.startWidth = ringWidth;
+        lineRenderer.endWidth = ringWidth;
+        
+        // Shader simple (Legacy Particules ou similaire fonctionne bien sans texture)
+        // On essaie de trouver un shader de base Unity qui supporte les couleurs vertex
+        Shader shader = Shader.Find("Sprites/Default"); 
+        if(shader == null) shader = Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply");
+        
+        lineRenderer.material = new Material(shader);
+
+        UpdateRingColor();
+    }
+
+    private void UpdateRingColor()
+    {
+        if (lineRenderer != null)
+        {
+            Color targetColor = isRecyclingBin ? recyclingColor : wasteColor;
+            lineRenderer.startColor = targetColor;
+            lineRenderer.endColor = targetColor;
+        }
+    }
+
+    private void AnimateRing()
+    {
+        if (lineRenderer == null) return;
+
+        // On peut mettre à jour la couleur si on change en runtime
+        // Note: Pour optimiser, ne le faire que si isRecyclingBin change
+        // Mais ici c'est léger
+        UpdateRingColor();
+
+        float angleStep = 360f / segments;
+        float yOffset = baseHeight + Mathf.Sin(Time.time * verticalSpeed) * verticalRange;
+
+        // On s'assure que le collider est pris en compte pour la hauteur de base si besoin
+        // Ici on prend juste le centre local (0,0,0) + oscillation Y
+        
+        Vector3[] positions = new Vector3[segments];
+
+        for (int i = 0; i < segments; i++)
+        {
+            float angle = i * angleStep * Mathf.Deg2Rad;
+            float x = Mathf.Cos(angle) * ringRadius;
+            float z = Mathf.Sin(angle) * ringRadius;
+
+            positions[i] = new Vector3(x, yOffset, z);
+        }
+
+        lineRenderer.SetPositions(positions);
     }
 
     private void OnTriggerEnter(Collider other)
