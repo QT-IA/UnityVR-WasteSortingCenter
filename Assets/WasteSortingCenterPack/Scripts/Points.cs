@@ -90,28 +90,33 @@ public class WasteDestroyerUI : MonoBehaviour
 
         if (isSuccess)
         {
-            if (successTextUI != null)
-            {
-                SpawnFloatingText(successTextUI, successMessage, successColor);
-            }
-
             // AJOUT DE POINTS
+            int pointsAdded = 1;
+
             if (ScoreManager.Instance != null)
             {
-                ScoreManager.Instance.AddPoints(1);
+                pointsAdded = ScoreManager.Instance.AddPoints(1);
+            }
+
+            if (successTextUI != null)
+            {
+                // Affiche les points réélement gagnés (ex: +1, +2, +3 ou +0)
+                SpawnFloatingText(successTextUI, "+" + pointsAdded, successColor);
             }
         }
         else
         {
-            if (errorTextUI != null)
-            {
-                SpawnFloatingText(errorTextUI, errorMessage, errorColor);
-            }
-
             // RETRAIT DE POINTS
+            int pointsRemoved = -1;
+
             if (ScoreManager.Instance != null)
             {
-                ScoreManager.Instance.AddPoints(-1);
+                pointsRemoved = ScoreManager.Instance.AddPoints(-1);
+            }
+
+            if (errorTextUI != null)
+            {
+                SpawnFloatingText(errorTextUI, pointsRemoved.ToString(), errorColor);
             }
         }
         // Plus besoin de HideMessage car les textes volants se détruisent tout seuls

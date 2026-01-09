@@ -57,6 +57,8 @@ public class Spawner : MonoBehaviour
     public float spawnInterval = 1f;
     [Tooltip("Activer/désactiver le spawn automatique en boucle")]
     public bool loop = true;
+    [Tooltip("Temps de vie des objets en secondes avant destruction automatique (0 = infini)")]
+    public float objectLifetime = 20f;
 
     [Header("Physics / projection")]
     [Tooltip("Force appliquée le long de l'axe local Right (X) du point de spawn lors de l'instanciation. 0 = pas de force.")]
@@ -155,6 +157,12 @@ public class Spawner : MonoBehaviour
         }
 
         GameObject go = Instantiate(prefab, pos, rot);
+
+        // Destruction automatique après un certain temps pour éviter que les déchets ne s'accumulent
+        if (objectLifetime > 0f)
+        {
+            Destroy(go, objectLifetime);
+        }
 
         // Appliquer une force le long de l'axe local Right (X) du point de spawn ou du spawner
         if (spawnForce != 0f)

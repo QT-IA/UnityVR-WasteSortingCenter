@@ -52,4 +52,9 @@ public class TreadmillsController : MonoBehaviour
     {
         targetSpeed = Mathf.Clamp01(speed01);
     }
+
+    public float GetSpeedRatio()
+    {
+        return targetSpeed;
+    }
 }
