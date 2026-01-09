@@ -2214,7 +2214,7 @@ MonoBehaviour:
   minAngle: -45
   maxAngle: 45
   initialSpeedRatio: 0.5
-  minOutputSpeed: 0.2
+  minOutputSpeed: 0.3
 --- !u!1001 &983285370
 PrefabInstance:
   m_ObjectHideFlags: 0

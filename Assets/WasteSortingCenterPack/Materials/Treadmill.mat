@@ -109,7 +109,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _ElapsedTime: -38.218784
+    - _ElapsedTime: -15.170042
     - _EllapsedTime: 0.1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
@@ -128,7 +128,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
     - _SpecularHighlights: 1
-    - _Speed: 0.3924725
+    - _Speed: 0.10000005
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
