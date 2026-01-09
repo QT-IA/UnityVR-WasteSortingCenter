@@ -1868,6 +1868,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalScoreText: {fileID: 1235744216}
+  treadmillsController: {fileID: 0}
+  pausedMultiplier: 0
+  minSpeedMultiplier: 1
+  maxSpeedMultiplier: 3
+  maxScoreSpeedThreshold: 0.8
+  minScoreSpeedThreshold: 0.2
 --- !u!1001 &743085757
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7849,6 +7855,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorIndustrial01_1
       objectReference: {fileID: 0}
+    - target: {fileID: 4121358074145540, guid: 286ae824efd14554c821b71e4fbfab9f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.075
+      objectReference: {fileID: 0}
     - target: {fileID: 4477433217068082, guid: 286ae824efd14554c821b71e4fbfab9f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.334
@@ -7888,6 +7898,18 @@ PrefabInstance:
     - target: {fileID: 4477433217068082, guid: 286ae824efd14554c821b71e4fbfab9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4994834725627956, guid: 286ae824efd14554c821b71e4fbfab9f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4994834725627956, guid: 286ae824efd14554c821b71e4fbfab9f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.384
+      objectReference: {fileID: 0}
+    - target: {fileID: 4994834725627956, guid: 286ae824efd14554c821b71e4fbfab9f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.013
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8459,7 +8481,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 417678, guid: a374f229b771eaa4886cbe9a20784361, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.433
+      value: -0.038
       objectReference: {fileID: 0}
     - target: {fileID: 417678, guid: a374f229b771eaa4886cbe9a20784361, type: 3}
       propertyPath: m_LocalPosition.z
@@ -11899,6 +11921,7 @@ MonoBehaviour:
   spawnPoints: []
   spawnInterval: 2
   loop: 1
+  objectLifetime: 20
   spawnForce: 0.8
   spawnForceMode: 1
   addRigidbodyIfMissing: 0
