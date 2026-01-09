@@ -1868,12 +1868,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalScoreText: {fileID: 1235744216}
-  treadmillsController: {fileID: 0}
+  treadmillsController: {fileID: 4423224763619647825}
   pausedMultiplier: 0
   minSpeedMultiplier: 1
   maxSpeedMultiplier: 3
-  maxScoreSpeedThreshold: 0.8
-  minScoreSpeedThreshold: 0.2
+  maxScoreSpeedThreshold: 0.9
+  minScoreSpeedThreshold: 0.3
 --- !u!1001 &743085757
 PrefabInstance:
   m_ObjectHideFlags: 0
