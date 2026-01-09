@@ -32,6 +32,12 @@ public class WasteDestroyerUI : MonoBehaviour
     public string errorMessage = "-1";
     public Color errorColor = Color.red;
 
+    [Header("Audio Feedback")]
+    public AudioClip successSound;
+    public AudioClip errorSound;
+    [Range(0f, 1f)] public float soundVolume = 1.0f;
+    private AudioSource audioSource;
+
     [Header("Debug")]
     [Tooltip("Activer les logs pour le debug")]
     public bool debugLog = false;
@@ -47,6 +53,13 @@ public class WasteDestroyerUI : MonoBehaviour
         }
 
         HideMessage();
+
+        // Setup AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -90,6 +103,12 @@ public class WasteDestroyerUI : MonoBehaviour
 
         if (isSuccess)
         {
+            // AUDIO
+            if (audioSource != null && successSound != null)
+            {
+                audioSource.PlayOneShot(successSound, soundVolume);
+            }
+
             // AJOUT DE POINTS
             int pointsAdded = 1;
 
@@ -106,6 +125,12 @@ public class WasteDestroyerUI : MonoBehaviour
         }
         else
         {
+            // AUDIO
+            if (audioSource != null && errorSound != null)
+            {
+                audioSource.PlayOneShot(errorSound, soundVolume);
+            }
+
             // RETRAIT DE POINTS
             int pointsRemoved = -1;
 
