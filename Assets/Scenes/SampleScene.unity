@@ -1049,7 +1049,10 @@ MonoBehaviour:
   debugLog: 0
   destroyDelay: 0
   loopingSound: {fileID: 8300000, guid: a15766e26cda8d64f95ec7add3ea40c2, type: 3}
-  soundVolume: 0.2
+  soundVolume: 0.1
+  burnParticlesPrefab: {fileID: 0}
+  shrinkEffect: 1
+  shrinkDuration: 0.3
 --- !u!65 &334024373
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1093,6 +1096,7 @@ MonoBehaviour:
   segments: 50
   recyclingColor: {r: 0, g: 1, b: 0, a: 1}
   wasteColor: {r: 1, g: 0, b: 0, a: 1}
+  destroyParticles: {fileID: 0}
   successTextUI: {fileID: 134718060}
   errorTextUI: {fileID: 227807576}
   messageDuration: 1
@@ -1104,6 +1108,9 @@ MonoBehaviour:
   successSound: {fileID: 8300000, guid: 149a043186e2da347a8da3f5e02d1eb5, type: 3}
   errorSound: {fileID: 8300000, guid: 2fe3a5c5d5147d246bd42f264ebd47c8, type: 3}
   soundVolume: 0.4
+  binVisual: {fileID: 0}
+  bounceStrength: 0.05
+  bounceDuration: 0.3
   debugLog: 0
 --- !u!1001 &344699305
 PrefabInstance:
@@ -2574,7 +2581,7 @@ Transform:
   m_GameObject: {fileID: 1116898501}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1.37, z: -0}
+  m_LocalPosition: {x: -0.226, y: 1.37, z: 0.224}
   m_LocalScale: {x: 1, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3375,7 +3382,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.2
+      value: 0.1
       mode: 0
       spread: 0
       speed:
@@ -7428,7 +7435,7 @@ MonoBehaviour:
   segments: 50
   ringColor: {r: 1, g: 0.5, b: 0, a: 1}
   scoreSound: {fileID: 8300000, guid: 149a043186e2da347a8da3f5e02d1eb5, type: 3}
-  soundVolume: 1
+  soundVolume: 0.4
 --- !u!64 &1194740202
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -10197,7 +10204,8 @@ Transform:
   m_LocalPosition: {x: -1.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 295155513}
   m_Father: {fileID: 5202860830739798743}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &2421943073090733743
@@ -11105,7 +11113,6 @@ Transform:
   - {fileID: 3541326122372898343}
   - {fileID: 2283347637153770813}
   - {fileID: 1076171336}
-  - {fileID: 295155513}
   - {fileID: 683567410}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11564,7 +11571,10 @@ MonoBehaviour:
   debugLog: 0
   destroyDelay: 0
   loopingSound: {fileID: 0}
-  soundVolume: 0.5
+  soundVolume: 0
+  burnParticlesPrefab: {fileID: 0}
+  shrinkEffect: 1
+  shrinkDuration: 0.3
 --- !u!65 &6050890301830362898
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11608,6 +11618,7 @@ MonoBehaviour:
   segments: 50
   recyclingColor: {r: 0, g: 1, b: 0, a: 1}
   wasteColor: {r: 1, g: 0, b: 0, a: 1}
+  destroyParticles: {fileID: 0}
   successTextUI: {fileID: 134718060}
   errorTextUI: {fileID: 227807576}
   messageDuration: 1
@@ -11618,7 +11629,10 @@ MonoBehaviour:
   errorColor: {r: 1, g: 0, b: 0, a: 1}
   successSound: {fileID: 8300000, guid: 149a043186e2da347a8da3f5e02d1eb5, type: 3}
   errorSound: {fileID: 8300000, guid: 2fe3a5c5d5147d246bd42f264ebd47c8, type: 3}
-  soundVolume: 1
+  soundVolume: 0.4
+  binVisual: {fileID: 0}
+  bounceStrength: 0.1
+  bounceDuration: 0.3
   debugLog: 0
 --- !u!114 &6185039747296875450
 MonoBehaviour:
@@ -12416,6 +12430,9 @@ MonoBehaviour:
   spawnForce: 0.8
   spawnForceMode: 1
   addRigidbodyIfMissing: 0
+  spawnerVisual: {fileID: 0}
+  punchScaleAmount: 0.1
+  punchDuration: 0.2
   randomizeRotation: 1
   randomizeY: 0
   randomRotationMin: {x: 0, y: 0, z: 0}
@@ -12426,7 +12443,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5202860830739798743}
+    m_TransformParent: {fileID: 2283347637153770813}
     m_Modifications:
     - target: {fileID: 1365535681804077773, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_Mesh
@@ -12454,7 +12471,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.809
+      value: 0.009000063
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12462,23 +12479,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.57
+      value: -0.57
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6320364330269262403, guid: a6cd45daac07daf4f96f925ccb5b7547, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

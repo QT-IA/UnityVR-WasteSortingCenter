@@ -72,7 +72,16 @@ public class Spawner : MonoBehaviour
     [Tooltip("Si vrai, ajoute automatiquement un Rigidbody si le prefab instancié n'en a pas.")]
     public bool addRigidbodyIfMissing = false;
 
+    [Header("Animation Feedback")]
+    [Tooltip("Objet visuel à animer (ex: le spawner lui-même). Si vide, utilise ce Transform.")]
+    public Transform spawnerVisual;
+    [Tooltip("Force du 'recul' (scale punch)")]
+    public float punchScaleAmount = 0.2f; 
+    [Tooltip("Durée de l'animation")]
+    public float punchDuration = 0.2f;
+
     [Header("Random rotation")]
+
     [Tooltip("Activer la rotation aléatoire appliquée au prefab instancié.")]
     public bool randomizeRotation = true;
     [Tooltip("Si vrai, la rotation aléatoire affectera aussi l'axe Y. Sinon Y restera celui du spawnPoint.")]
@@ -128,6 +137,9 @@ public class Spawner : MonoBehaviour
         while (true)
         {
             SpawnOne();
+        // Animation "Spit" / Recul
+        StartCoroutine(AnimateSpawner());
+
             yield return new WaitForSeconds(spawnInterval);
         }
     }
@@ -290,5 +302,26 @@ public class Spawner : MonoBehaviour
         if (Water0 != null && Water0 != except) return Water0;
         if (Water1 != null && Water1 != except) return Water1;
         return null;
+    }
+
+    private IEnumerator AnimateSpawner()
+    {
+        Transform target = spawnerVisual != null ? spawnerVisual : transform;
+        Vector3 initialScale = target.localScale;
+        Vector3 punchScale = initialScale * (1f + punchScaleAmount); // Grow a bit
+
+        float timer = 0f;
+        while(timer < punchDuration)
+        {
+            timer += Time.deltaTime;
+            float progress = timer / punchDuration;
+            
+            // Parabole simple : 0 -> 1 -> 0
+            float curve = Mathf.Sin(progress * Mathf.PI); 
+            
+            target.localScale = Vector3.Lerp(initialScale, punchScale, curve);
+            yield return null;
+        }
+        target.localScale = initialScale;
     }
 }

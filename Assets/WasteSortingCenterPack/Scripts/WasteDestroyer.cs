@@ -17,7 +17,16 @@ public class WasteDestroyer : MonoBehaviour
     public AudioClip loopingSound;
     [Range(0f, 1f)] public float soundVolume = 0.5f;
 
+    [Header("Visual FX")]
+    [Tooltip("Prefab de particules à instancier lors de la destruction (ex: feu/fumée)")]
+    public GameObject burnParticlesPrefab;
+    [Tooltip("Effet de réduction (scale down) avant destruction")]
+    public bool shrinkEffect = true;
+    [Tooltip("Durée de l'effet de reduction")]
+    public float shrinkDuration = 0.3f;
+
     private AudioSource audioSource;
+
 
     void Start()
     {
@@ -64,13 +73,54 @@ public class WasteDestroyer : MonoBehaviour
             Debug.Log($"WasteDestroyer: Destruction de {other.gameObject.name}");
         }
 
-        if (destroyDelay > 0f)
+        StartCoroutine(DestroySequence(other.gameObject));
+    }
+
+    private System.Collections.IEnumerator DestroySequence(GameObject obj)
+    {
+        // 1. Instancier les particules
+        if (burnParticlesPrefab != null)
         {
-            Destroy(other.gameObject, destroyDelay);
+            Instantiate(burnParticlesPrefab, obj.transform.position, Quaternion.identity);
         }
-        else
+
+        // 2. Désactiver la physique pour qu'il ne bouge plus pendant l'anim
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            Destroy(other.gameObject);
+            rb.isKinematic = true;
+        }
+        Collider col = obj.GetComponent<Collider>();
+        if (col != null)
+        {
+            col.enabled = false;
+        }
+
+        // 3. Effet de shrink (scale down)
+        if (shrinkEffect && shrinkDuration > 0f)
+        {
+            float timer = 0f;
+            Vector3 startScale = obj.transform.localScale;
+
+            while (timer < shrinkDuration)
+            {
+                if (obj == null) yield break; // Sécurité si détruit ailleurs
+                timer += Time.deltaTime;
+                float progress = timer / shrinkDuration;
+                obj.transform.localScale = Vector3.Lerp(startScale, Vector3.zero, progress);
+                yield return null;
+            }
+        }
+        else if (destroyDelay > 0f)
+        {
+            yield return new WaitForSeconds(destroyDelay);
+        }
+
+        // 4. Destruction finale
+        if (obj != null)
+        {
+            Destroy(obj);
         }
     }
 }
+

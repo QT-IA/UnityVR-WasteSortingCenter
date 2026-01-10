@@ -25,6 +25,10 @@ public class WasteDestroyerUI : MonoBehaviour
     private LineRenderer lineRenderer;
     private GameObject ringObject;
 
+    [Header("Visual FX")]
+    [Tooltip("Prefab de particules à instancier lors de la destruction (ex: feu/fumée/confettis)")]
+    public GameObject destroyParticles;
+
     [Header("UI Feedback")]
     [Tooltip("ASSIGNER ICI LE TEXTE 'SCORE +1' (celui au dessus de la poubelle verte)")]
     public TMP_Text successTextUI;
@@ -51,6 +55,14 @@ public class WasteDestroyerUI : MonoBehaviour
     public AudioClip errorSound;
     [Range(0f, 1f)] public float soundVolume = 1.0f;
     private AudioSource audioSource;
+
+    [Header("Animation Feedback")]
+    [Tooltip("Objet visuel à faire rebondir quand un objet entre. Si vide, utilise ce Transform.")]
+    public Transform binVisual;
+    [Tooltip("Force du rebond (scale mul)")]
+    public float bounceStrength = 0.1f;
+    [Tooltip("Durée du rebond")]
+    public float bounceDuration = 0.3f;
 
     [Header("Debug")]
     [Tooltip("Activer les logs pour le debug")]
@@ -165,6 +177,15 @@ public class WasteDestroyerUI : MonoBehaviour
             Debug.Log($"WasteDestroyerUI: Objet entré: {objectName} | Tag: {tag} | Mode Recyclage: {isRecyclingBin}");
         }
 
+        // Animation de rebond
+        StartCoroutine(AnimateBounce());
+
+        // Particules (Depop)
+        if (destroyParticles != null)
+        {
+            Instantiate(destroyParticles, other.transform.position, Quaternion.identity);
+        }
+
         // Si c'est un ballon de basket, on le détruit mais on met 0 points (ni bonus, ni malus) du point de vue de CETTE poubelle
         // car le ballon doit aller dans le panier
         if (tag == "Basketball")
@@ -272,5 +293,30 @@ public class WasteDestroyerUI : MonoBehaviour
         // On vide juste les textes templates pour qu'ils restent invisibles
         if (successTextUI != null) successTextUI.text = "";
         if (errorTextUI != null) errorTextUI.text = "";
+    }
+
+    private System.Collections.IEnumerator AnimateBounce()
+    {
+        Transform target = binVisual != null ? binVisual : transform;
+        Vector3 initialScale = target.localScale;
+        
+        // On évite d'empiler les coroutines qui modifient le scale en même temps si possible, mais ici c'est rapide
+        // Effet de squash/stretch simple : on réduit la hauteur (Y) et augmente la largeur (X/Z)
+        Vector3 squatScale = new Vector3(initialScale.x * (1 + bounceStrength), initialScale.y * (1 - bounceStrength), initialScale.z * (1 + bounceStrength));
+
+        float timer = 0f;
+        while(timer < bounceDuration)
+        {
+            timer += Time.deltaTime;
+            float progress = timer / bounceDuration;
+            
+            // Rebond élastique : 0 -> 1 -> 0 avec un dépassement possible
+            // Utilisons une courbe sinus pour l'aller-retour simple
+            float curve = Mathf.Sin(progress * Mathf.PI);
+
+            target.localScale = Vector3.Lerp(initialScale, squatScale, curve);
+            yield return null;
+        }
+        target.localScale = initialScale;
     }
 }
