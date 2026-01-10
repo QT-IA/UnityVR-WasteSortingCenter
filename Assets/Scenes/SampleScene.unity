@@ -1049,7 +1049,7 @@ MonoBehaviour:
   debugLog: 0
   destroyDelay: 0
   loopingSound: {fileID: 8300000, guid: a15766e26cda8d64f95ec7add3ea40c2, type: 3}
-  soundVolume: 0.3
+  soundVolume: 0.2
 --- !u!65 &334024373
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1102,8 +1102,8 @@ MonoBehaviour:
   errorMessage: -1
   errorColor: {r: 1, g: 0, b: 0, a: 1}
   successSound: {fileID: 8300000, guid: 149a043186e2da347a8da3f5e02d1eb5, type: 3}
-  errorSound: {fileID: 8300000, guid: 6a8d56b10d28f6f409fa775643e3f9ca, type: 3}
-  soundVolume: 0.1
+  errorSound: {fileID: 8300000, guid: 2fe3a5c5d5147d246bd42f264ebd47c8, type: 3}
+  soundVolume: 0.4
   debugLog: 0
 --- !u!1001 &344699305
 PrefabInstance:
@@ -11617,8 +11617,8 @@ MonoBehaviour:
   errorMessage: -1
   errorColor: {r: 1, g: 0, b: 0, a: 1}
   successSound: {fileID: 8300000, guid: 149a043186e2da347a8da3f5e02d1eb5, type: 3}
-  errorSound: {fileID: 8300000, guid: 6a8d56b10d28f6f409fa775643e3f9ca, type: 3}
-  soundVolume: 0.3
+  errorSound: {fileID: 8300000, guid: 2fe3a5c5d5147d246bd42f264ebd47c8, type: 3}
+  soundVolume: 1
   debugLog: 0
 --- !u!114 &6185039747296875450
 MonoBehaviour:
