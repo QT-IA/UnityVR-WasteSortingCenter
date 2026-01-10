@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b68512ad6a1aa304e8bd79f3d5f6a1c2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297800
+  packageName: BasketballRing
+  packageVersion: 1.0
+  assetPath: Assets/MarioParadiso/BasketballRing/Built-In/Materials/Net.mat
+  uploadId: 698496

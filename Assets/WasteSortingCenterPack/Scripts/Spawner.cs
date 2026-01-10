@@ -25,6 +25,8 @@ public class Spawner : MonoBehaviour
     public GameObject Water0;
     [Tooltip("Prefab pour Water1")]
     public GameObject Water1;
+    [Tooltip("Prefab pour Basketball")]
+    public GameObject Basketball;
 
     [Header("Probabilités (les valeurs seront normalisées)")]
     [Tooltip("Poids relatif pour Apple")] [Range(0f, 1f)]
@@ -49,6 +51,8 @@ public class Spawner : MonoBehaviour
     public float weightWater0 = 0.09f;
     [Tooltip("Poids relatif pour Water1")] [Range(0f, 1f)]
     public float weightWater1 = 0.10f;
+    [Tooltip("Poids relatif pour Basketball")] [Range(0f, 1f)]
+    public float weightBasketball = 0.02f;
 
     [Header("Spawn settings")]
     [Tooltip("Points où les objets peuvent apparaître. Si vide, utilise la position du GameObject contenant ce script.")]
@@ -95,6 +99,7 @@ public class Spawner : MonoBehaviour
         if (weightSodaCup < 0f) weightSodaCup = 0f;
         if (weightWater0 < 0f) weightWater0 = 0f;
         if (weightWater1 < 0f) weightWater1 = 0f;
+        if (weightBasketball < 0f) weightBasketball = 0f;
         if (spawnInterval < 0.01f) spawnInterval = 0.01f;
     }
 
@@ -198,7 +203,7 @@ public class Spawner : MonoBehaviour
     private GameObject ChoosePrefabByProbability()
     {
         float total = weightApple + weightBottle + weightCarrot + weightCarton0 + weightCarton1 + 
-                      weightPizza + weightPizzaBox + weightSodaCan + weightSodaCup + weightWater0 + weightWater1;
+                      weightPizza + weightPizzaBox + weightSodaCan + weightSodaCup + weightWater0 + weightWater1 + weightBasketball;
         
         if (total <= 0f)
         {
@@ -215,6 +220,7 @@ public class Spawner : MonoBehaviour
             if (SodaCup != null) list.Add(SodaCup);
             if (Water0 != null) list.Add(Water0);
             if (Water1 != null) list.Add(Water1);
+            if (Basketball != null) list.Add(Basketball);
             if (list.Count == 0) return null;
             return list[Random.Range(0, list.Count)];
         }
@@ -259,9 +265,13 @@ public class Spawner : MonoBehaviour
         
         if (r < weightWater0)
             return Water0 != null ? Water0 : FallbackPrefabExcept(Water0);
+        r -= weightWater0; 
+
+        if (r < weightWater1)
+            return Water1 != null ? Water1 : FallbackPrefabExcept(Water1);
         
-        // else Water1
-        return Water1 != null ? Water1 : FallbackPrefabExcept(Water1);
+        // else Basketball
+        return Basketball != null ? Basketball : FallbackPrefabExcept(Basketball);
     }
 
     private GameObject FallbackPrefabExcept(GameObject except)
@@ -273,6 +283,7 @@ public class Spawner : MonoBehaviour
         if (Carton0 != null && Carton0 != except) return Carton0;
         if (Carton1 != null && Carton1 != except) return Carton1;
         if (Pizza != null && Pizza != except) return Pizza;
+        if (Basketball != null && Basketball != except) return Basketball;
         if (PizzaBox != null && PizzaBox != except) return PizzaBox;
         if (SodaCan != null && SodaCan != except) return SodaCan;
         if (SodaCup != null && SodaCup != except) return SodaCup;

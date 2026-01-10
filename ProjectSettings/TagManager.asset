@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - dechet_pas_recyclable
+  - Basketball
   layers:
   - Default
   - TransparentFX

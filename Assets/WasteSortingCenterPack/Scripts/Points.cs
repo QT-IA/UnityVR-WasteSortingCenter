@@ -165,8 +165,18 @@ public class WasteDestroyerUI : MonoBehaviour
             Debug.Log($"WasteDestroyerUI: Objet entré: {objectName} | Tag: {tag} | Mode Recyclage: {isRecyclingBin}");
         }
 
+        // Si c'est un ballon de basket, on le détruit mais on met 0 points (ni bonus, ni malus) du point de vue de CETTE poubelle
+        // car le ballon doit aller dans le panier
+        if (tag == "Basketball")
+        {
+             if (destroyDelay > 0f) Destroy(other.gameObject, destroyDelay);
+             else Destroy(other.gameObject);
+             return;
+        }
+
         // Afficher le message UI (Succès ou Erreur selon la logique)
         ShowDestructionMessage(tag);
+
 
         // Détruire l'objet
         if (destroyDelay > 0f)
