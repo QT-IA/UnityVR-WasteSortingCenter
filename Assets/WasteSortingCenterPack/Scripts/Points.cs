@@ -88,6 +88,11 @@ public class WasteDestroyerUI : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+        // Configure AudioSource pour feedback UI : non-spatialisé (2D) -> volume constant
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.volume = soundVolume;
+        audioSource.spatialBlend = 0f;
     }
 
     private void Update()

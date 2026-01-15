@@ -48,6 +48,12 @@ public class BasketHoop : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+        
+        // Configuration Audio 2D pour être sûr qu'on l'entende peu importe la distance ou la position du filet
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.volume = soundVolume;
+        audioSource.spatialBlend = 0f;
 
         SetupRing();
     }

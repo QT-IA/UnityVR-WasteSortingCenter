@@ -108,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wasteType: Generic
   isAppropriate: 1
-  pointValue: 19
+  pointValue: 25
 --- !u!54 &-8551293218259360829
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -272,7 +272,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_ThrowVelocityScale: 1.5
+  m_ThrowVelocityScale: 1.3
   m_ThrowAngularVelocityScale: 1
   m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1

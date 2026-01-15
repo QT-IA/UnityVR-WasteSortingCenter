@@ -29,11 +29,22 @@ public class SpeedControlLever : MonoBehaviour
     // Etat interne
     private Quaternion neutralRotation; // La rotation de base (correspondant au préfab posé dans la scène)
     private float currentAngle = 0f;
+    private float grabOffsetAngle = 0f; // Offset to prevent snapping on grab
+
+    void OnEnable()
+    {
+        if (grabInteractable == null) grabInteractable = GetComponent<XRBaseInteractable>();
+        if (grabInteractable != null)
+        {
+            grabInteractable.selectEntered.AddListener(OnGrabbed);
+            grabInteractable.selectExited.AddListener(OnReleased);
+        }
+    }
 
     void Start()
     {
         // Récupère les composants nécessaires
-        grabInteractable = GetComponent<XRBaseInteractable>();
+        if (grabInteractable == null) grabInteractable = GetComponent<XRBaseInteractable>();
         rb = GetComponent<Rigidbody>();
 
         if (grabInteractable == null)
@@ -80,6 +91,26 @@ public class SpeedControlLever : MonoBehaviour
         if (grabInteractable.interactorsSelecting.Count == 0) return;
         var interactor = grabInteractable.interactorsSelecting[0];
 
+        // Recalcule l'angle brut de la main par rapport au levier
+        float rawAngle = CalculateRawAngle(interactor);
+
+        // Applique l'offset mémorisé à la prise en main pour éviter le saut (snap)
+        // Angle désiré = AngleMain + Offset
+        float targetAngle = rawAngle + grabOffsetAngle;
+
+        // Contraint l'angle
+        currentAngle = Mathf.Clamp(targetAngle, minAngle, maxAngle);
+
+        // Applique
+        UpdateLeverRotation();
+        UpdateSpeed();
+    }
+
+    /// <summary>
+    /// Calcule l'angle brut (non clampé) formé par l'interacteur par rapport au pivot du levier.
+    /// </summary>
+    float CalculateRawAngle(UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor interactor)
+    {
         // 1. Récupère la position de la main
         Vector3 handWorldPos = interactor.GetAttachTransform(grabInteractable).position;
         
@@ -102,22 +133,14 @@ public class SpeedControlLever : MonoBehaviour
         }
 
         // 3. Prépare les axes de référence transformés par la rotation neutre
-        // (Cela permet de garder les axes corrects même si le levier a été placé avec une rotation bizarre)
         Vector3 effectiveRotationAxis = neutralRotation * rotationAxis; 
         Vector3 effectiveLeverUp = neutralRotation * leverUpAxis;
 
-        // 4. Projette le vecteur main sur le plan de rotation (enlève la composante de l'axe)
+        // 4. Projette le vecteur main sur le plan de rotation
         Vector3 projectedVec = Vector3.ProjectOnPlane(vecToHand, effectiveRotationAxis);
 
-        // 5. Calcule l'angle entre le "Haut" neutre et le vecteur main projeté
-        float angle = Vector3.SignedAngle(effectiveLeverUp, projectedVec, effectiveRotationAxis);
-
-        // 6. Contraint l'angle
-        currentAngle = Mathf.Clamp(angle, minAngle, maxAngle);
-
-        // 7. Applique
-        UpdateLeverRotation();
-        UpdateSpeed();
+        // 5. Calcule l'angle signé
+        return Vector3.SignedAngle(effectiveLeverUp, projectedVec, effectiveRotationAxis);
     }
 
     void UpdateLeverRotation()
@@ -145,7 +168,11 @@ public class SpeedControlLever : MonoBehaviour
 
     void OnGrabbed(SelectEnterEventArgs args)
     {
-        // Logique optionnelle au grab
+        // Calcul de l'offset au moment du grab
+        // On veut que : currentAngle = RawAngle + offset
+        // Donc : offset = currentAngle - RawAngle
+        float rawHandAngle = CalculateRawAngle(args.interactorObject);
+        grabOffsetAngle = currentAngle - rawHandAngle;
     }
 
     void OnReleased(SelectExitEventArgs args)
